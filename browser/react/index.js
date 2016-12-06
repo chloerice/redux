@@ -27,7 +27,7 @@ ReactDOM.render(
       </Route>
       <Route path="/new-playlist" component={NewPlaylistContainer} />
       <Route path="/playlists/:playlistId" component={Playlist} />
-      <Route path="/lyrics/:artist/:song" component={LyricsContainer} />
+      <Route path="/lyrics" component={LyricsContainer} />
       <IndexRedirect to='/albums' />
     </Route>
   </Router>,
