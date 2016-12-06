@@ -1,6 +1,5 @@
 import {SET_LYRICS} from '../constants';
 
-
 export const setLyrics = function (lyric) {
 
   return {
