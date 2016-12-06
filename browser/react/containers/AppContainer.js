@@ -10,18 +10,15 @@ import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 
+import store from '../store';
 import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
 
 export default class AppContainer extends Component {
 
   constructor (props) {
     super(props);
-    this.state = initialState;
+    this.state = Object.assign({}, initialState, store.getState());
 
-    this.toggle = this.toggle.bind(this);
-    this.toggleOne = this.toggleOne.bind(this);
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
     this.selectArtist = this.selectArtist.bind(this);
     this.addPlaylist = this.addPlaylist.bind(this);
@@ -53,54 +50,6 @@ export default class AppContainer extends Component {
       artists: artists,
       playlists: playlists
     });
-  }
-
-  play () {
-    AUDIO.play();
-    this.setState({ isPlaying: true });
-  }
-
-  pause () {
-    AUDIO.pause();
-    this.setState({ isPlaying: false });
-  }
-
-  load (currentSong, currentSongList) {
-    AUDIO.src = currentSong.audioUrl;
-    AUDIO.load();
-    this.setState({
-      currentSong: currentSong,
-      currentSongList: currentSongList
-    });
-  }
-
-  startSong (song, list) {
-    this.pause();
-    this.load(song, list);
-    this.play();
-  }
-
-  toggleOne (selectedSong, selectedSongList) {
-    if (selectedSong.id !== this.state.currentSong.id)
-      this.startSong(selectedSong, selectedSongList);
-    else this.toggle();
-  }
-
-  toggle () {
-    if (this.state.isPlaying) this.pause();
-    else this.play();
-  }
-
-  next () {
-    this.startSong(...skip(1, this.state));
-  }
-
-  prev () {
-    this.startSong(...skip(-1, this.state));
-  }
-
-  setProgress (progress) {
-    this.setState({ progress: progress });
   }
 
   selectAlbum (albumId) {
@@ -186,8 +135,6 @@ export default class AppContainer extends Component {
   render () {
 
     const props = Object.assign({}, this.state, {
-      toggleOne: this.toggleOne,
-      toggle: this.toggle,
       selectAlbum: this.selectAlbum,
       selectArtist: this.selectArtist,
       addPlaylist: this.addPlaylist,
@@ -207,13 +154,13 @@ export default class AppContainer extends Component {
         }
         </div>
         <Player
-          currentSong={this.state.currentSong}
-          currentSongList={this.state.currentSongList}
-          isPlaying={this.state.isPlaying}
-          progress={this.state.progress}
-          next={this.next}
-          prev={this.prev}
-          toggle={this.toggle}
+          currentSong={this.state.player.currentSong}
+          currentSongList={this.state.player.currentSongList}
+          isPlaying={this.state.player.isPlaying}
+          progress={this.state.player.progress}
+          next={this.state.player.next}
+          prev={this.state.player.prev}
+          toggle={this.state.player.toggle}
         />
       </div>
     );
