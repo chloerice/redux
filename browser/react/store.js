@@ -10,8 +10,8 @@ import playerReducer from './reducers/player-reducer';
 import albumsReducer from './reducers/albums-reducer';
 
 
-const logger = applyMiddleware(createLogger());
-const handleAsync = applyMiddleware(thunkMiddleware);
+const logger = createLogger({collapse: true});
+const handleAsync = thunkMiddleware;
 
 const reducers = combineReducers({
                   lyrics: lyricsReducer,
@@ -19,4 +19,10 @@ const reducers = combineReducers({
                   albums: albumsReducer
                 });
 
-export default createStore(reducers, logger, handleAsync);
+export default createStore(
+  reducers,
+  applyMiddleware(
+   logger,
+   handleAsync
+  )
+);
