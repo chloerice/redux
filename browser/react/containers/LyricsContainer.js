@@ -49,7 +49,7 @@ class LyricsContainer extends React.Component {
   render () {
 
     return (
-            <Lyrics lyrics={this.state.lyrics.lyric}
+            <Lyrics lyrics={this.state.lyrics.text}
                     setArtist={this.handleArtistInput}
                     artistQuery={this.state.artistQuery}
                     setSong={this.handleSongInput}

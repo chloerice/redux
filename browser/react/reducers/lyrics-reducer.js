@@ -1,13 +1,17 @@
 import { SET_LYRICS } from '../constants';
 
-const initialState = { lyric: '' }
+const initialLyricsState = {
+  lyrics: {
+    text: ''
+  }
+}
 
-export default function reducer (state = initialState, action) {
+export default function reducer (state = initialLyricsState, action) {
   let newState;
 
   switch (action.type) {
     case SET_LYRICS:
-      newState = Object.assign({}, state, { lyric: action.lyric });
+      newState.lyrics = { text: action.text };
       break;
 
     default:

@@ -26,7 +26,7 @@ const Lyrics = (props) => {
         className='form-control'
         placeholder="Enter song title"
       />
-      <pre>{props.lyrics}</pre>
+      <pre>{props.lyrics.text}</pre>
       <button
         type="submit"
         className="btn btn-success"
