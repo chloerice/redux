@@ -1,4 +1,4 @@
-import {SET_CURRENT_SONG, SET_LIST, SET_PROGRESS, START_PLAYING, STOP_PLAYING} from '../constants'
+import {SET_CURRENT_SONG, SET_LIST, SET_PROGRESS, START_PLAYING, STOP_PLAYING} from '../constants';
 
 export const setCurrentSong = function (song) {
 

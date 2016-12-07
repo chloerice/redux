@@ -2,11 +2,11 @@ import React from 'react';
 
 const Player = (props) => {
 
-  const currentSong = props.currentSong;
-  const currentSongList = props.currentSongList;
-  const isPlaying = props.isPlaying;
-  const progress = props.progress;
-  const prev = props.prev;
+  const currentSong = props.player.currentSong;
+  const currentSongList = props.player.currentSongList;
+  const isPlaying = props.player.isPlaying;
+  const progress = props.player.progress;
+  const prev = props.async.prev;
   const toggle = props.toggle;
   const next = props.next;
 

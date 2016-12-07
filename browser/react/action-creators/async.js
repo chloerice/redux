@@ -1,27 +1,38 @@
 /* BUT WAIT THERE'S MORE! (may be helpful later on!) */
-import {setLyrics, setProgress, startPlaying, stopPlaying, setList, setCurrentSong} from './lyrics';
-import {skip} from '../utils';
+import {setLyrics} from './lyrics';
+import {startPlaying, stopPlaying, setList, setCurrentSong} from './player';
+import {receiveAlbums, receiveAlbum} from './albums';
+import {skip, convertAlbum, convertAlbums, convertSong} from '../utils';
 import axios from 'axios';
 import AUDIO from '../audio';
 
-export const fetchLyrics = function (artist, song) {
-  return function (dispatch, getState) {
-    axios.get(`/api/lyrics/${artist}/${song}`)
-      .then(res => {
-        dispatch(setLyrics(res.data.lyric));
-      });
-  };
+//LYRICS METHOD
+export const fetchLyrics = (artist, song) => (dispatch) => {
+  axios.get(`/api/lyrics/${artist}/${song}`)
+    .then(res => {
+      dispatch(setLyrics(res.data.lyric));
+    });
 };
 
-export const fetchAlbumsFromServer =() => {
+//ALBUM(S) METHODS
+export const selectAlbums = () => {
   return dispatch => {
     axios.get('/api/albums')
       .then(res => res.data)
-      // use the dispatch method the thunkMiddleware gave us
-      .then(albums => dispatch(receiveAlbumsFromServer(albums)));
+      .then(albums => dispatch(receiveAlbums(convertAlbums(albums))))
   }
 }
 
+export const selectAlbum = (albumId) => {
+  return dispatch => {
+    axios.get(`/api/albums/${albumId}`)
+      .then(res => res.data)
+      .then(album => dispatch(receiveAlbum(convertAlbum(album))
+      ));
+  }
+}
+
+//PLAYER METHODS
 export const play = () => {
   return dispatch => {
     // side effects, like using the audio element belong in async action creators too, even if they aren't "async"
@@ -42,7 +53,7 @@ export const load = (currentSong, currentSongList) => {
     AUDIO.src = currentSong.audioUrl;
     AUDIO.load()
     dispatch(setCurrentSong(currentSong));
-    dispatch(setCurrentSongList(currentSongList));
+    dispatch(setList(currentSongList));
   }
 }
 
@@ -60,31 +71,28 @@ export const toggle = () => (dispatch, getState) => {
   else dispatch(play());
 };
 
-export const toggleOne = (selectedSong, selectedSongList) => {
-  return dispatch => {
-    const {currentSong} = getState();
-   if (selectedSong.id !== currentSong.id)
+export const toggleOne = (selectedSong, selectedSongList) => (dispatch, getState) => {
+    const {currentSong} = getState().player;
+    if (selectedSong.id !== currentSong.id) {
       dispatch(startSong(selectedSong, selectedSongList));
-    else dispatch(toggle());
-  }
+    } else {
+      dispatch(toggle());
+    }
 }
 
-export const next = () => () => {
-  const { isPlaying } = getState();
-  dispatch(startSong(...skip(1, getState())));
+export const next = () => (dispatch, getState) => {
+  dispatch(startSong(...skip(1, getState().player)));
 };
 
-export const prev = () => () => {
-  const { isPlaying } = getState();
-  dispatch(startSong(...skip(-1, getState())));
+export const prev = () => (dispatch, getState) => {
+  dispatch(startSong(...skip(-1, getState().player)));
 };
 
-
-
-export const doSeveralThings = (stuffId, thingsId) => {
-  return dispatch => {
-    // we can also use async action creators to compose several actions into one!
-    dispatch(doStuff(stuffId));
-    dispatch(doThing(thingId));
-  }
-}
+//EXAMPLE
+// export const doSeveralThings = (stuffId, thingsId) => {
+//   return dispatch => {
+//     // we can also use async action creators to compose several actions into one!
+//     dispatch(doStuff(stuffId));
+//     dispatch(doThing(thingId));
+//   }
+// }

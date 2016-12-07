@@ -1,20 +1,19 @@
 import React from 'react';
 import Songs from '../components/Songs';
+import {selectAlbum, toggleOne} from '../action-creators/async';
 
 class Album extends React.Component {
 
   componentDidMount () {
-    const selectAlbum = this.props.selectAlbum;
     const albumId = this.props.routeParams.albumId;
 
-    selectAlbum(albumId);
+    store.dispatch(selectAlbum(albumId));
   }
 
   render () {
-    const album = this.props.selectedAlbum;
-    const currentSong = this.props.currentSong;
-    const isPlaying = this.props.isPlaying;
-    const toggleOne = this.props.toggleOne;
+    const album = this.props.albums.selectedAlbum;
+    const currentSong = this.props.player.currentSong;
+    const isPlaying = this.props.player.isPlaying;
 
     return (
       <div className="album">

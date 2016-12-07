@@ -5,13 +5,11 @@ import { hashHistory } from 'react-router';
 import initialState from '../initialState';
 import AUDIO from '../audio';
 
-import Albums from '../components/Albums.js';
-import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 
 import store from '../store';
-import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
+import { convertAlbums, convertSong } from '../utils';
 
 export default class AppContainer extends Component {
 
@@ -19,7 +17,6 @@ export default class AppContainer extends Component {
     super(props);
     this.state = Object.assign({}, initialState, store.getState());
 
-    this.selectAlbum = this.selectAlbum.bind(this);
     this.selectArtist = this.selectArtist.bind(this);
     this.addPlaylist = this.addPlaylist.bind(this);
     this.selectPlaylist = this.selectPlaylist.bind(this);
@@ -31,7 +28,6 @@ export default class AppContainer extends Component {
 
     Promise
       .all([
-        axios.get('/api/albums/'),
         axios.get('/api/artists/'),
         axios.get('/api/playlists')
       ])
@@ -44,20 +40,11 @@ export default class AppContainer extends Component {
       this.setProgress(AUDIO.currentTime / AUDIO.duration));
   }
 
-  onLoad (albums, artists, playlists) {
+  onLoad (artists, playlists) {
     this.setState({
-      albums: convertAlbums(albums),
       artists: artists,
       playlists: playlists
     });
-  }
-
-  selectAlbum (albumId) {
-    axios.get(`/api/albums/${albumId}`)
-      .then(res => res.data)
-      .then(album => this.setState({
-        selectedAlbum: convertAlbum(album)
-      }));
   }
 
   selectArtist (artistId) {
@@ -135,12 +122,12 @@ export default class AppContainer extends Component {
   render () {
 
     const props = Object.assign({}, this.state, {
-      selectAlbum: this.selectAlbum,
       selectArtist: this.selectArtist,
       addPlaylist: this.addPlaylist,
       selectPlaylist: this.selectPlaylist,
       loadSongs: this.loadSongs,
       addSongToPlaylist: this.addSongToPlaylist
+
     });
 
     return (
